@@ -6,7 +6,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
 
-public class SearchTestUtils {
+public class TestUtils {
 
     public ChromeDriver getConfiguredChromeDriver() {
         WebDriverManager.chromedriver().setup();

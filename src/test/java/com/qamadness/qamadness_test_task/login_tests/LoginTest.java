@@ -6,10 +6,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import test_utils.SearchTestUtils;
+import test_utils.TestUtils;
 
 import java.time.Duration;
 
@@ -22,11 +23,11 @@ class LoginTest {
 
     @BeforeEach
     void setUp() {
-        SearchTestUtils searchTestUtils = new SearchTestUtils();
-        driver = searchTestUtils.getConfiguredChromeDriver();
+        TestUtils testUtils = new TestUtils();
+        driver = testUtils.getConfiguredChromeDriver();
         loginPage = new LoginPage(this.driver);
         mainPage = new MainPage(this.driver);
-        driverWait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        driverWait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     @AfterEach
@@ -37,11 +38,16 @@ class LoginTest {
     @Test
     void verifyThatUserCanLogin() {
         loginPage.open();
-        loginPage.enterEmailInput("rekruit.free@gmail.com");
+        loginPage.enterEmail("rekruit.free@gmail.com");
         loginPage.clickContinueWithEmailButton();
-        loginPage.enterPasswordInput("passworD123");
+        loginPage.enterPassword("passworD123");
         loginPage.clickSignInButton();
-        driverWait.until(ExpectedConditions.visibilityOf(mainPage.getSearchButton()));
+        try{
+            driverWait.until(ExpectedConditions.visibilityOf(mainPage.getSearchButton()));}
+        catch (TimeoutException exception) {
+            driver.navigate().refresh();
+            driverWait.until(ExpectedConditions.visibilityOf(mainPage.getSearchButton()));
+    }
         Assertions.assertEquals(mainPage.getTitle(), driver.getTitle());
     }
 
@@ -49,7 +55,7 @@ class LoginTest {
     void verifyThatUserCantLoginWithoutPassword() {
         mainPage.open();
         mainPage.clickSignInRegisterButton();
-        loginPage.enterEmailInput("rekruit.free@gmail.com");
+        loginPage.enterEmail("rekruit.free@gmail.com");
         loginPage.clickContinueWithEmailButton();
         loginPage.clickSignInButton();
         Assertions.assertEquals(loginPage.getPasswordNote().getText(), "Please enter your Booking.com password");

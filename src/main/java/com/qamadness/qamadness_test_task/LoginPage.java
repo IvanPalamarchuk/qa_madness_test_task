@@ -29,11 +29,11 @@ public class LoginPage {
         url = "https://account.booking.com/";
     }
 
-    public void enterEmailInput(String username) {
+    public void enterEmail(String username) {
         emailInput.sendKeys(username);
     }
 
-    public void enterPasswordInput(String password) {
+    public void enterPassword(String password) {
         passwordInput.sendKeys(password);
     }
 
